@@ -18,13 +18,12 @@ public class User {
 	/*
 	 * These are the private attributes for this entity object
 	 */
-    private String userName;
+    private String emailAddress;
     private String password;
     private String firstName;
     private String middleName;
     private String lastName;
-    private String preferredFirstName;
-    private String emailAddress;
+    private String phoneNumber;
     private boolean adminRole;
     private boolean role1;
     private boolean role2;
@@ -58,15 +57,14 @@ public class User {
      * 
      */
     // Constructor to initialize a new User object with userName, password, and role.
-    public User(String userName, String password, String fn, String mn, String ln, String pfn, 
-    		String ea, boolean r1, boolean r2, boolean r3) {
-        this.userName = userName;
+    public User(String email, String password, String fn, String mn, String ln, String pfn, 
+    		 boolean r1, boolean r2, boolean r3) {
+        this.emailAddress = email;
         this.password = password;
         this.firstName = fn;
         this.middleName = mn;
         this.lastName = ln;
-        this.preferredFirstName = pfn;
-        this.emailAddress = ea;
+        this.phoneNumber = pfn;
         this.adminRole = r1;
         this.role1 = r2;
         this.role2 = r3;
@@ -116,7 +114,7 @@ public class User {
 
     
     /*****
-     * <p> Method: String getUserName() </p>
+     * <p> Method: String getEmailAddress() </p>
      * 
      * <p> Description: This getter returns the UserName. </p>
      * 
@@ -124,7 +122,7 @@ public class User {
      * 
      */
     // Gets the current value of the UserName.
-    public String getUserName() { return userName; }
+    public String getEmailAddress() { return emailAddress; }
 
     
     /*****
@@ -176,7 +174,7 @@ public class User {
 
     
     /*****
-     * <p> Method: String getPreferredFirstName() </p>
+     * <p> Method: String getPhoneNumber() </p>
      * 
      * <p> Description: This getter returns the PreferredFirstName. </p>
      * 
@@ -184,27 +182,16 @@ public class User {
 	 *
      */
     // Gets the current value of the Student role attribute.
-    public String getPreferredFirstName() { return preferredFirstName; }
+    public String getPhoneNumber() { return phoneNumber; }
 
-    
-    /*****
-     * <p> Method: String getEmailAddress() </p>
-     * 
-     * <p> Description: This getter returns the EmailAddress. </p>
-     * 
-     * @return a String of the EmailAddress
-	 *
-     */
-    // Gets the current value of the Student role attribute.
-    public String getEmailAddress() { return emailAddress; }
+   
 
-    public void setUserName(String s) { userName = s; }
+    public void setEmailAddress(String s) { emailAddress = s; }
     public void setPassword(String s) { password = s; }
     public void setFirstName(String s) { firstName = s; }
     public void setMiddleName(String s) { middleName = s; }
     public void setLastName(String s) { lastName = s; }
-    public void setPreferredFirstName(String s) { preferredFirstName = s; }
-    public void setEmailAddress(String s) { emailAddress = s; }
+    public void setPhoneNumber(String s) { phoneNumber = s; }
 
     
     /*****

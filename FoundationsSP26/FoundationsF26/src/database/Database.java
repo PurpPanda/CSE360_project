@@ -185,7 +185,7 @@ public class Database {
 				+ "lastName, preferredFirstName, emailAddress, adminRole, newRole1, newRole2) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
-			currentUsername = user.getUserName();
+			currentUsername = user.getEmailAddress();
 			pstmt.setString(1, currentUsername);
 			
 			currentPassword = user.getPassword();
@@ -200,7 +200,7 @@ public class Database {
 			currentLastName = user.getLastName();
 			pstmt.setString(5, currentLastName);
 			
-			currentPreferredFirstName = user.getPreferredFirstName();
+			currentPreferredFirstName = user.getPhoneNumber();
 			pstmt.setString(6, currentPreferredFirstName);
 			
 			currentEmailAddress = user.getEmailAddress();
@@ -260,7 +260,7 @@ public class Database {
 		String query = "SELECT * FROM userDB WHERE userName = ? AND password = ? AND "
 				+ "adminRole = TRUE";
 		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-			pstmt.setString(1, user.getUserName());
+			pstmt.setString(1, user.getEmailAddress());
 			pstmt.setString(2, user.getPassword());
 			ResultSet rs = pstmt.executeQuery();
 			return rs.next();	// If a row is returned, rs.next() will return true		
@@ -287,7 +287,7 @@ public class Database {
 		String query = "SELECT * FROM userDB WHERE userName = ? AND password = ? AND "
 				+ "newRole1 = TRUE";
 		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-			pstmt.setString(1, user.getUserName());
+			pstmt.setString(1, user.getEmailAddress());
 			pstmt.setString(2, user.getPassword());
 			ResultSet rs = pstmt.executeQuery();
 			return rs.next();
@@ -313,7 +313,7 @@ public class Database {
 		String query = "SELECT * FROM userDB WHERE userName = ? AND password = ? AND "
 				+ "newRole2 = TRUE";
 		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-			pstmt.setString(1, user.getUserName());
+			pstmt.setString(1, user.getEmailAddress());
 			pstmt.setString(2, user.getPassword());
 			ResultSet rs = pstmt.executeQuery();
 			return rs.next();
@@ -700,7 +700,7 @@ public class Database {
 	
 	
 	/*******
-	 * <p> Method: String getPreferredFirstName(String username) </p>
+	 * <p> Method: String getPhoneNumber(String username) </p>
 	 * 
 	 * <p> Description: Get the preferred first name of a user given that user's username.</p>
 	 * 
@@ -710,7 +710,7 @@ public class Database {
 	 *  
 	 */
 	// get the preferred first name
-	public String getPreferredFirstName(String username) {
+	public String getPhoneNumber(String username) {
 		String query = "SELECT preferredFirstName FROM userDB WHERE userName = ?";
 		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 			pstmt.setString(1, username);

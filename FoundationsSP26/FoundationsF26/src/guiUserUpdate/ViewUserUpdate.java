@@ -5,13 +5,16 @@ import java.util.Optional;
 import database.Database;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import entityClasses.User;
+
 
 /*******
  * <p> Title: ViewUserUpdate Class. </p>
@@ -61,13 +64,12 @@ public class ViewUserUpdate {
     		new Label(" Use this page to define or update your account information."); 
     
     // These are static output labels and do not change during execution
-	private static Label label_Username = new Label("Username:");
+	private static Label label_EmailAddress = new Label("Email Address:");
 	private static Label label_Password = new Label("Password:");
 	private static Label label_FirstName = new Label("First Name:");
 	private static Label label_MiddleName = new Label("Middle Name:");
 	private static Label label_LastName = new Label("Last Name:");
-	private static Label label_PreferredFirstName = new Label("Preferred First Name:");
-	private static Label label_EmailAddress = new Label("Email Address:");
+	private static Label label_PhoneNumber = new Label("Phone Number:");
 	
 	// These are dynamic labels and they change based on the user and user interactions.
 	private static Label label_CurrentUsername = new Label();
@@ -75,18 +77,17 @@ public class ViewUserUpdate {
 	private static Label label_CurrentFirstName = new Label();
 	private static Label label_CurrentMiddleName = new Label();
 	private static Label label_CurrentLastName = new Label();
-	private static Label label_CurrentPreferredFirstName = new Label();
+	private static Label label_CurrentPhoneNumber = new Label();
 	private static Label label_CurrentEmailAddress = new Label();
 	
 	// These buttons enable the user to edit the various dynamic fields.  The username and the
 	// passwords for a user are currently not editable.
-	private static Button button_UpdateUsername = new Button("Update Username");
+	private static Button button_UpdateEmailAddress = new Button("Update Email Address");
 	private static Button button_UpdatePassword = new Button("Update Password");
 	private static Button button_UpdateFirstName = new Button("Update First Name");
 	private static Button button_UpdateMiddleName = new Button("Update Middle Name");
 	private static Button button_UpdateLastName = new Button("Update Last Name");
-	private static Button button_UpdatePreferredFirstName = new Button("Update Preferred First Name");
-	private static Button button_UpdateEmailAddress = new Button("Update Email Address");
+	private static Button button_UpdatePhoneNumber = new Button("Update Phone Number");
 
 	// This button enables the user to finish working on this page and proceed to the user's home
 	// page determined by the user's role at the time of log in.
@@ -94,12 +95,14 @@ public class ViewUserUpdate {
 	
 	// This is the end of the GUI widgets for this page.
 	
+	protected static Alert alertNameError = new Alert(AlertType.INFORMATION);
+	
 	// These are the set of pop-up dialog boxes that are used to enable the user to change the
 	// the values of the various account detail items.
 	private static TextInputDialog dialogUpdateFirstName;
 	private static TextInputDialog dialogUpdateMiddleName;
 	private static TextInputDialog dialogUpdateLastName;
-	private static TextInputDialog dialogUpdatePreferredFirstName;
+	private static TextInputDialog dialogUpdatePhoneNumber;
 	private static TextInputDialog dialogUpdateEmailAddresss;
 	
 	// These attributes are used to configure the page and populate it with this user's information
@@ -160,7 +163,7 @@ public class ViewUserUpdate {
 		
 		// Set the dynamic aspects of the window based on the user logged in and the current state
 		// of the various account elements.
-		s = theUser.getUserName();
+		s = theUser.getEmailAddress();
 		System.out.println("*** Fetching account data for user: " + s);
     	if (s == null || s.length() < 1)label_CurrentUsername.setText("<none>");
     	else label_CurrentUsername.setText(s);
@@ -181,9 +184,9 @@ public class ViewUserUpdate {
     	if (s == null || s.length() < 1)label_CurrentLastName.setText("<none>");
     	else label_CurrentLastName.setText(s);
         
-		s = theUser.getPreferredFirstName();
-    	if (s == null || s.length() < 1)label_CurrentPreferredFirstName.setText("<none>");
-    	else label_CurrentPreferredFirstName.setText(s);
+		s = theUser.getPhoneNumber();
+    	if (s == null || s.length() < 1)label_CurrentPhoneNumber.setText("<none>");
+    	else label_CurrentPhoneNumber.setText(s);
         
 		s = theUser.getEmailAddress();
     	if (s == null || s.length() < 1)label_CurrentEmailAddress.setText("<none>");
@@ -218,7 +221,7 @@ public class ViewUserUpdate {
 		dialogUpdateFirstName = new TextInputDialog("");
 		dialogUpdateMiddleName = new TextInputDialog("");
 		dialogUpdateLastName = new TextInputDialog("");
-		dialogUpdatePreferredFirstName = new TextInputDialog("");
+		dialogUpdatePhoneNumber = new TextInputDialog("");
 		dialogUpdateEmailAddresss = new TextInputDialog("");
 
 		// Establish the label for each of the dialogs.
@@ -231,8 +234,8 @@ public class ViewUserUpdate {
 		dialogUpdateLastName.setTitle("Update Last Name");
 		dialogUpdateLastName.setHeaderText("Update your Last Name");
 		
-		dialogUpdatePreferredFirstName.setTitle("Update Preferred First Name");
-		dialogUpdatePreferredFirstName.setHeaderText("Update your Preferred First Name");
+		dialogUpdatePhoneNumber.setTitle("Update Preferred First Name");
+		dialogUpdatePhoneNumber.setHeaderText("Update your Preferred First Name");
 		
 		dialogUpdateEmailAddresss.setTitle("Update Email Address");
 		dialogUpdateEmailAddresss.setHeaderText("Update your Email Address");
@@ -246,10 +249,26 @@ public class ViewUserUpdate {
         // Display the titles, values, and update buttons for the various admin account attributes.
         // If the attributes is null or empty, display "<none>".
         
-        // USername
-        setupLabelUI(label_Username, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 100);
-        setupLabelUI(label_CurrentUsername, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 100);
-        setupButtonUI(button_UpdateUsername, "Dialog", 18, 275, Pos.CENTER, 500, 93);
+        // USername/Email
+        setupLabelUI(label_EmailAddress, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 100);
+        setupLabelUI(label_CurrentEmailAddress, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 100);
+        setupButtonUI(button_UpdateEmailAddress, "Dialog", 18, 275, Pos.CENTER, 500, 93);
+        button_UpdateEmailAddress.setOnAction((_) -> {result = dialogUpdateEmailAddresss.showAndWait();
+    		result.ifPresent(inputEmail -> {
+        	    String error = guiTools.EmailValidator.checkEmailAddress(inputEmail);
+        	    if (!error.isEmpty()) {
+        	        alertNameError.setContentText(error);
+        	        alertNameError.showAndWait();
+        	        return;	
+    		}
+    		theDatabase.updateEmailAddress(theUser.getEmailAddress(), inputEmail);
+    		theDatabase.getUserAccountDetails(theUser.getEmailAddress());
+    		String newEmail = theDatabase.getCurrentEmailAddress();
+           	theUser.setEmailAddress(newEmail);
+        	if (newEmail == null || newEmail.length() < 1)label_CurrentEmailAddress.setText("<none>");
+        	else label_CurrentEmailAddress.setText(newEmail);
+ 			});
+        });
        
         // password
         setupLabelUI(label_Password, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 150);
@@ -261,69 +280,88 @@ public class ViewUserUpdate {
         setupLabelUI(label_CurrentFirstName, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 200);
         setupButtonUI(button_UpdateFirstName, "Dialog", 18, 275, Pos.CENTER, 500, 193);
         button_UpdateFirstName.setOnAction((_) -> {result = dialogUpdateFirstName.showAndWait();
-        	result.ifPresent(_ -> theDatabase.updateFirstName(theUser.getUserName(), result.get()));
-        	theDatabase.getUserAccountDetails(theUser.getUserName());
+        	result.ifPresent(inputName -> {
+        	    String error = guiTools.NameValidator.checkName(inputName);
+        	    if (!error.isEmpty()) {
+        	        alertNameError.setContentText(error);
+        	        alertNameError.showAndWait();
+        	        return;
+        		}
+        	theDatabase.updateFirstName(theUser.getEmailAddress(), inputName);
+        	theDatabase.getUserAccountDetails(theUser.getEmailAddress());
          	String newName = theDatabase.getCurrentFirstName();
            	theUser.setFirstName(newName);
         	if (newName == null || newName.length() < 1)label_CurrentFirstName.setText("<none>");
         	else label_CurrentFirstName.setText(newName);
          	});
+        });
                
         // Middle Name
         setupLabelUI(label_MiddleName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 250);
         setupLabelUI(label_CurrentMiddleName, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 250);
         setupButtonUI(button_UpdateMiddleName, "Dialog", 18, 275, Pos.CENTER, 500, 243);
         button_UpdateMiddleName.setOnAction((_) -> {result = dialogUpdateMiddleName.showAndWait();
-    		result.ifPresent(_ -> theDatabase.updateMiddleName(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
+    		result.ifPresent(inputName -> {
+    		    String error = guiTools.NameValidator.checkName(inputName);
+    		    if (!error.isEmpty()) {
+    		        alertNameError.setContentText(error);
+    		        alertNameError.showAndWait();
+    		        return;
+        		}
+    		theDatabase.updateMiddleName(theUser.getEmailAddress(), inputName);
+    		theDatabase.getUserAccountDetails(theUser.getEmailAddress());
     		String newName = theDatabase.getCurrentMiddleName();
            	theUser.setMiddleName(newName);
         	if (newName == null || newName.length() < 1)label_CurrentMiddleName.setText("<none>");
         	else label_CurrentMiddleName.setText(newName);
     		});
+        });
         
         // Last Name
         setupLabelUI(label_LastName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 300);
         setupLabelUI(label_CurrentLastName, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 300);
         setupButtonUI(button_UpdateLastName, "Dialog", 18, 275, Pos.CENTER, 500, 293);
         button_UpdateLastName.setOnAction((_) -> {result = dialogUpdateLastName.showAndWait();
-    		result.ifPresent(_ -> theDatabase.updateLastName(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
+    		result.ifPresent(inputName -> {
+    		    String error = guiTools.NameValidator.checkName(inputName);
+    		    if (!error.isEmpty()) {
+    		        alertNameError.setContentText(error);
+    		        alertNameError.showAndWait();
+    		        return;
+        		}
+    		theDatabase.updateLastName(theUser.getEmailAddress(), inputName);
+    		theDatabase.getUserAccountDetails(theUser.getEmailAddress());
     		String newName = theDatabase.getCurrentLastName();
            	theUser.setLastName(newName);
       	if (newName == null || newName.length() < 1)label_CurrentLastName.setText("<none>");
         	else label_CurrentLastName.setText(newName);
     		});
+        });
         
-        // Preferred First Name
-        setupLabelUI(label_PreferredFirstName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 
+        // Phone Number
+        setupLabelUI(label_PhoneNumber, "Arial", 18, 190, Pos.BASELINE_RIGHT, 
         		5, 350);
-        setupLabelUI(label_CurrentPreferredFirstName, "Arial", 18, 260, Pos.BASELINE_LEFT, 
+        setupLabelUI(label_CurrentPhoneNumber, "Arial", 18, 260, Pos.BASELINE_LEFT, 
         		200, 350);
-        setupButtonUI(button_UpdatePreferredFirstName, "Dialog", 18, 275, Pos.CENTER, 500, 343);
-        button_UpdatePreferredFirstName.setOnAction((_) -> 
-        	{result = dialogUpdatePreferredFirstName.showAndWait();
-    		result.ifPresent(_ -> 
-    		theDatabase.updatePreferredFirstName(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
+        setupButtonUI(button_UpdatePhoneNumber, "Dialog", 18, 275, Pos.CENTER, 500, 343);
+        button_UpdatePhoneNumber.setOnAction((_) -> 
+        	{result = dialogUpdatePhoneNumber.showAndWait();
+    		result.ifPresent(inputPhone -> {
+    		    String error = guiTools.PhoneNumbValidator.checkPhoneNumber(inputPhone);
+    		    if (!error.isEmpty()) {
+    		        alertNameError.setContentText(error);
+    		        alertNameError.showAndWait();
+    		        return;		
+    		    }
+    		theDatabase.updatePreferredFirstName(theUser.getEmailAddress(), inputPhone);
+    		theDatabase.getUserAccountDetails(theUser.getEmailAddress());
     		String newName = theDatabase.getCurrentPreferredFirstName();
-           	theUser.setPreferredFirstName(newName);
-         	if (newName == null || newName.length() < 1)label_CurrentPreferredFirstName.setText("<none>");
-        	else label_CurrentPreferredFirstName.setText(newName);
+           	theUser.setPhoneNumber(newName);
+         	if (newName == null || newName.length() < 1)label_CurrentPhoneNumber.setText("<none>");
+        	else label_CurrentPhoneNumber.setText(newName);
      		});
+        	});
         
-        // Email Address
-        setupLabelUI(label_EmailAddress, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 400);
-        setupLabelUI(label_CurrentEmailAddress, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 400);
-        setupButtonUI(button_UpdateEmailAddress, "Dialog", 18, 275, Pos.CENTER, 500, 393);
-        button_UpdateEmailAddress.setOnAction((_) -> {result = dialogUpdateEmailAddresss.showAndWait();
-    		result.ifPresent(_ -> theDatabase.updateEmailAddress(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newEmail = theDatabase.getCurrentEmailAddress();
-           	theUser.setEmailAddress(newEmail);
-        	if (newEmail == null || newEmail.length() < 1)label_CurrentEmailAddress.setText("<none>");
-        	else label_CurrentEmailAddress.setText(newEmail);
- 			});
         
         // Set up the button to proceed to this user's home page
         setupButtonUI(button_ProceedToUserHomePage, "Dialog", 18, 300, 
@@ -333,15 +371,14 @@ public class ViewUserUpdate {
     	
         // Populate the Pane's list of children widgets
         theRootPane.getChildren().addAll(
-        		label_ApplicationTitle, label_Purpose, label_Username,
-        		label_CurrentUsername, 
+        		label_ApplicationTitle, label_Purpose,
         		label_Password, label_CurrentPassword, 
         		button_UpdatePassword, 
         		label_FirstName, label_CurrentFirstName, button_UpdateFirstName,
         		label_MiddleName, label_CurrentMiddleName, button_UpdateMiddleName,
         		label_LastName, label_CurrentLastName, button_UpdateLastName,
-        		label_PreferredFirstName, label_CurrentPreferredFirstName,
-        		button_UpdatePreferredFirstName, button_UpdateEmailAddress,
+        		label_PhoneNumber, label_CurrentPhoneNumber,
+        		button_UpdatePhoneNumber, button_UpdateEmailAddress,
         		label_EmailAddress, label_CurrentEmailAddress, 
         		button_ProceedToUserHomePage);
 	}

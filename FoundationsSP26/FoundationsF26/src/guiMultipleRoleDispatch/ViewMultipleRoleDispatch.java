@@ -99,15 +99,15 @@ public class ViewMultipleRoleDispatch {
 		if (theView == null) theView = new ViewMultipleRoleDispatch();
 
 		List<String> list = new ArrayList<String>();	// Create a new list empty list
-		theDatabase.getUserAccountDetails(theUser.getUserName());
+		theDatabase.getUserAccountDetails(theUser.getEmailAddress());
 		
-		label_UserDetails.setText("User: " + theUser.getUserName() + "   Select which role");
+		label_UserDetails.setText("User: " + theUser.getEmailAddress() + "   Select which role");
 		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.CENTER, 0, 50);
 
-		label_UserDetails.setText("User: " + theUser.getUserName());
+		label_UserDetails.setText("User: " + theUser.getEmailAddress());
 		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);			
 
-		System.out.println("*** Getting multiple role details for user: " + theUser.getUserName());
+		System.out.println("*** Getting multiple role details for user: " + theUser.getEmailAddress());
 		list = new ArrayList<String>();
 		list.add("<Select a role>");
 		if (theDatabase.getCurrentAdminRole()) list.add("Admin");

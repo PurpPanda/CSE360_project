@@ -102,12 +102,25 @@ public class ControllerFirstAdmin {
 	 * database.  If that is successful, we proceed to the UserUpdate page.</p>
 	 * 
 	 */
+	
 	protected static void doSetupAdmin(Stage ps, int r) {
 		
+		String error = guiTools.EmailValidator.checkEmailAddress(adminUsername);
+		
 		// Make sure the two passwords are the same
-		if (adminPassword1.compareTo(adminPassword2) == 0) {
-        	// Create the passwords and proceed to the user home page
-        	User user = new User(adminUsername, adminPassword1, "", "", "", "", "", true, false, 
+		if (adminPassword1.compareTo(adminPassword2) != 0) {
+			ViewFirstAdmin.text_AdminPassword1.setText("");
+			ViewFirstAdmin.text_AdminPassword2.setText("");
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
+					"The two passwords must match. Please try again!");
+		}
+		else if (!error.isEmpty()) {
+			ViewFirstAdmin.alertUsernamePasswordError.setContentText(error);
+			ViewFirstAdmin.alertUsernamePasswordError.showAndWait();
+        	        return;	
+    		}
+		else {
+			User user = new User(adminUsername, adminPassword1, "", "", "", "", true, false, 
         			false);
             try {
             	// Create a new User object with admin role and register in the database
@@ -122,14 +135,6 @@ public class ControllerFirstAdmin {
             
             // User was established in the database, so navigate to the User Update Page
         	guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewFirstAdmin.theStage, user);
-		}
-		else {
-			// The two passwords are NOT the same, so clear the passwords, explain the passwords
-			// must be the same, and clear the message as soon as the first character is typed.
-			ViewFirstAdmin.text_AdminPassword1.setText("");
-			ViewFirstAdmin.text_AdminPassword2.setText("");
-			ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
-					"The two passwords must match. Please try again!");
 		}
 	}
 	
