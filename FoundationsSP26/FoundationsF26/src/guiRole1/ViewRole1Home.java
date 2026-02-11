@@ -121,10 +121,10 @@ public class ViewRole1Home {
 		
 		// Populate the dynamic aspects of the GUI with the data from the user and the current
 		// state of the system.
-		theDatabase.getUserAccountDetails(user.getUserName());
+		theDatabase.getUserAccountDetails(user.getEmailAddress());
 		applicationMain.FoundationsMain.activeHomePage = theRole;
 		
-		label_UserDetails.setText("User: " + theUser.getUserName());
+		label_UserDetails.setText("User: " + theUser.getEmailAddress());
 				
 		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundations: Role1 Home Page");
@@ -157,7 +157,7 @@ public class ViewRole1Home {
 		label_PageTitle.setText("Role1 Home Page");
 		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
-		label_UserDetails.setText("User: " + theUser.getUserName());
+		label_UserDetails.setText("User: " + theUser.getEmailAddress());
 		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
 		
 		setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);

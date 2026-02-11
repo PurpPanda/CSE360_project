@@ -93,7 +93,7 @@ public class ControllerUserLogin {
 		// Establish this user's details
     	User user = new User(username, password, theDatabase.getCurrentFirstName(), 
     			theDatabase.getCurrentMiddleName(), theDatabase.getCurrentLastName(), 
-    			theDatabase.getCurrentPreferredFirstName(), theDatabase.getCurrentEmailAddress(), 
+    			theDatabase.getCurrentPreferredFirstName(), 
     			theDatabase.getCurrentAdminRole(), 
     			theDatabase.getCurrentNewRole1(), theDatabase.getCurrentNewRole2());
     	
