@@ -1,5 +1,6 @@
 package guiAdminHome;
 
+import guiTools.EmailValidator;
 import database.Database;
 
 /*******
@@ -57,7 +58,9 @@ public class ControllerAdminHome {
 	protected static void performInvitation () {
 		// Verify that the email address is valid - If not alert the user and return
 		String emailAddress = ViewAdminHome.text_InvitationEmailAddress.getText();
-		if (invalidEmailAddress(emailAddress)) {
+		if (EmailValidator.checkEmailAddress(emailAddress) != "") {
+			ViewAdminHome.alertEmailError.setContentText(EmailValidator.checkEmailAddress(emailAddress));
+			ViewAdminHome.alertEmailError.showAndWait();
 			return;
 		}
 		
